@@ -5,7 +5,6 @@
  */
 
 #include <AK/HashMap.h>
-#include <AK/IDAllocator.h>
 #include <AK/Singleton.h>
 #include <AK/TemporaryChange.h>
 #include <LibCore/Event.h>

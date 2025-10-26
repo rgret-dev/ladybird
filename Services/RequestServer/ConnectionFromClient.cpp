@@ -6,13 +6,13 @@
 
 #include "WebSocketImplCurl.h"
 
-#include <AK/IDAllocator.h>
 #include <AK/NonnullOwnPtr.h>
 #include <LibCore/ElapsedTimer.h>
 #include <LibCore/EventLoop.h>
 #include <LibCore/Proxy.h>
 #include <LibCore/Socket.h>
 #include <LibCore/StandardPaths.h>
+#include <LibCrypto/SecureIdentifierPool.h>
 #include <LibRequests/NetworkError.h>
 #include <LibRequests/RequestTimingInfo.h>
 #include <LibRequests/WebSocket.h>
@@ -35,7 +35,7 @@ namespace RequestServer {
 
 ByteString g_default_certificate_path;
 static HashMap<int, RefPtr<ConnectionFromClient>> s_connections;
-static IDAllocator s_client_ids;
+static Crypto::SecureIdentifierPool s_client_ids;
 static long s_connect_timeout_seconds = 90L;
 static struct {
     Optional<Core::SocketAddress> server_address;
@@ -388,7 +388,7 @@ int ConnectionFromClient::on_timeout_callback(void*, long timeout_ms, void* user
 }
 
 ConnectionFromClient::ConnectionFromClient(NonnullOwnPtr<IPC::Transport> transport)
-    : IPC::ConnectionFromClient<RequestClientEndpoint, RequestServerEndpoint>(*this, move(transport), s_client_ids.allocate())
+    : IPC::ConnectionFromClient<RequestClientEndpoint, RequestServerEndpoint>(*this, move(transport), s_client_ids.acquire_identifier())
     , m_resolver(default_resolver())
 {
     s_connections.set(client_id(), *this);
@@ -425,7 +425,7 @@ void ConnectionFromClient::die()
 {
     auto client_id = this->client_id();
     s_connections.remove(client_id);
-    s_client_ids.deallocate(client_id);
+    s_client_ids.release_identifier(client_id);
 
     if (s_connections.is_empty())
         Core::EventLoop::current().quit(0);

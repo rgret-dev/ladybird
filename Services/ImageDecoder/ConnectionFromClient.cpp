@@ -5,9 +5,9 @@
  */
 
 #include <AK/Debug.h>
-#include <AK/IDAllocator.h>
 #include <ImageDecoder/ConnectionFromClient.h>
 #include <ImageDecoder/ImageDecoderClientEndpoint.h>
+#include <LibCrypto/SecureIdentifierPool.h>
 #include <LibGfx/Bitmap.h>
 #include <LibGfx/ImageFormats/ImageDecoder.h>
 #include <LibGfx/ImageFormats/TIFFMetadata.h>
@@ -15,10 +15,10 @@
 namespace ImageDecoder {
 
 static HashMap<int, RefPtr<ConnectionFromClient>> s_connections;
-static IDAllocator s_client_ids;
+static Crypto::SecureIdentifierPool s_client_ids;
 
 ConnectionFromClient::ConnectionFromClient(NonnullOwnPtr<IPC::Transport> transport)
-    : IPC::ConnectionFromClient<ImageDecoderClientEndpoint, ImageDecoderServerEndpoint>(*this, move(transport), s_client_ids.allocate())
+    : IPC::ConnectionFromClient<ImageDecoderClientEndpoint, ImageDecoderServerEndpoint>(*this, move(transport), s_client_ids.acquire_identifier())
 {
     s_connections.set(client_id(), *this);
 }
@@ -32,7 +32,7 @@ void ConnectionFromClient::die()
 
     auto client_id = this->client_id();
     s_connections.remove(client_id);
-    s_client_ids.deallocate(client_id);
+    s_client_ids.release_identifier(client_id);
 
     if (s_connections.is_empty()) {
         Threading::quit_background_thread();

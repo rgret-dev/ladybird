@@ -539,7 +539,7 @@ i32 WindowOrWorkerGlobalScopeMixin::run_timer_initialization_steps(TimerHandler 
     // 1. Let thisArg be global if that is a WorkerGlobalScope object; otherwise let thisArg be the WindowProxy that corresponds to global.
 
     // 2. If previousId was given, let id be previousId; otherwise, let id be an implementation-defined integer that is greater than zero and does not already exist in global's map of setTimeout and setInterval IDs.
-    auto id = previous_id.has_value() ? previous_id.value() : m_timer_id_allocator.allocate();
+    auto id = previous_id.has_value() ? previous_id.value() : m_timer_id_pool.acquire_identifier();
 
     // FIXME: 3. If the surrounding agent's event loop's currently running task is a task that was created by this algorithm, then let nesting level be the task's timer nesting level. Otherwise, let nesting level be 0.
 
@@ -1081,7 +1081,7 @@ void WindowOrWorkerGlobalScopeMixin::run_steps_after_a_timeout_impl(i32 timeout,
 
     // 2. If timerKey is not given, then set it to a new unique non-numeric value.
     if (!timer_key.has_value())
-        timer_key = m_timer_id_allocator.allocate();
+        timer_key = m_timer_id_pool.acquire_identifier();
 
     // FIXME: 3. Let startTime be the current high resolution time given global.
     auto timer = Timer::create(this_impl(), timeout, move(completion_step), timer_key.value());

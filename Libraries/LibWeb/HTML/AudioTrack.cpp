@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
-#include <AK/IDAllocator.h>
+#include <LibCrypto/SecureIdentifierPool.h>
 #include <LibJS/Runtime/Realm.h>
 #include <LibJS/Runtime/VM.h>
 #include <LibMedia/Audio/Loader.h>
@@ -23,7 +23,7 @@ namespace Web::HTML {
 
 GC_DEFINE_ALLOCATOR(AudioTrack);
 
-static IDAllocator s_audio_track_id_allocator;
+static ::Crypto::SecureIdentifierPool s_audio_track_id_pool;
 
 AudioTrack::AudioTrack(JS::Realm& realm, GC::Ref<HTMLMediaElement> media_element, NonnullRefPtr<Audio::Loader> loader)
     : PlatformObject(realm)
@@ -50,7 +50,7 @@ AudioTrack::~AudioTrack()
     auto id = m_id.to_number<int>();
     VERIFY(id.has_value());
 
-    s_audio_track_id_allocator.deallocate(id.value());
+    s_audio_track_id_pool.release_identifier(id.value());
 }
 
 void AudioTrack::initialize(JS::Realm& realm)
@@ -58,7 +58,7 @@ void AudioTrack::initialize(JS::Realm& realm)
     WEB_SET_PROTOTYPE_FOR_INTERFACE(AudioTrack);
     Base::initialize(realm);
 
-    auto id = s_audio_track_id_allocator.allocate();
+    auto const id = s_audio_track_id_pool.acquire_identifier();
     m_id = String::number(id);
 }
 

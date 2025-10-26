@@ -90,7 +90,6 @@ shared_library("AK") {
     "HashTable.h",
     "Hex.cpp",
     "Hex.h",
-    "IDAllocator.h",
     "IPv4Address.h",
     "IPv6Address.h",
     "InsertionSort.h",

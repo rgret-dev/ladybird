@@ -10,8 +10,8 @@
 #include <AK/FlyString.h>
 #include <AK/Forward.h>
 #include <AK/HashMap.h>
-#include <AK/IDAllocator.h>
 #include <AK/Variant.h>
+#include <LibCrypto/SecureIdentifierPool.h>
 #include <LibWeb/Bindings/PlatformObject.h>
 #include <LibWeb/Export.h>
 #include <LibWeb/Fetch/Request.h>
@@ -126,7 +126,7 @@ private:
     void fire_resource_timing_buffer_full_event();
     void copy_resource_timing_secondary_buffer();
 
-    IDAllocator m_timer_id_allocator;
+    ::Crypto::SecureIdentifierPool m_timer_id_pool;
     HashMap<int, GC::Ref<Timer>> m_timers;
 
     // https://www.w3.org/TR/performance-timeline/#performance-timeline

@@ -6,12 +6,12 @@
 
 #include <AK/Assertions.h>
 #include <AK/HashMap.h>
-#include <AK/IDAllocator.h>
 #include <AK/Singleton.h>
 #include <AK/TemporaryChange.h>
 #include <LibCore/Event.h>
 #include <LibCore/Notifier.h>
 #include <LibCore/ThreadEventQueue.h>
+#include <LibCrypto/SecureIdentifierPool.h>
 #include <LibWebView/EventLoop/EventLoopImplementationMacOS.h>
 
 #import <Cocoa/Cocoa.h>
@@ -41,7 +41,7 @@ struct ThreadData {
         VERIFY_NOT_REACHED();
     }
 
-    IDAllocator timer_id_allocator;
+    SecureIdentifierPool timer_id_pool;
     HashMap<int, CFRunLoopTimerRef> timers;
     HashMap<Core::Notifier*, CFRunLoopSourceRef> notifiers;
 };
@@ -245,7 +245,7 @@ intptr_t EventLoopManagerMacOS::register_timer(Core::EventReceiver& receiver, in
 {
     auto& thread_data = ThreadData::the();
 
-    auto timer_id = thread_data.timer_id_allocator.allocate();
+    auto timer_id = thread_data.timer_id_pool.acquire_identifier();
     auto weak_receiver = receiver.make_weak_ptr();
 
     auto interval_seconds = static_cast<double>(interval_milliseconds) / 1000.0;
@@ -272,7 +272,7 @@ intptr_t EventLoopManagerMacOS::register_timer(Core::EventReceiver& receiver, in
 void EventLoopManagerMacOS::unregister_timer(intptr_t timer_id)
 {
     auto& thread_data = ThreadData::the();
-    thread_data.timer_id_allocator.deallocate(static_cast<int>(timer_id));
+    thread_data.timer_id_pool.release_identifier(static_cast<int>(timer_id));
 
     auto timer = thread_data.timers.take(static_cast<int>(timer_id));
     VERIFY(timer.has_value());

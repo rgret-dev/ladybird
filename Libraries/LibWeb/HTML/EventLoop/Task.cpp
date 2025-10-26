@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
-#include <AK/IDAllocator.h>
+#include <LibCrypto/SecureIdentifierPool.h>
 #include <LibWeb/DOM/Document.h>
 #include <LibWeb/HTML/EventLoop/Task.h>
 
@@ -12,7 +12,7 @@ namespace Web::HTML {
 
 GC_DEFINE_ALLOCATOR(Task);
 
-static IDAllocator s_unique_task_source_allocator { static_cast<int>(Task::Source::UniqueTaskSourceStart) };
+static ::Crypto::SecureIdentifierPool s_unique_task_source_pool { static_cast<int>(Task::Source::UniqueTaskSourceStart) };
 
 [[nodiscard]] static TaskID allocate_task_id()
 {
@@ -68,13 +68,13 @@ DOM::Document const* Task::document() const
 }
 
 UniqueTaskSource::UniqueTaskSource()
-    : source(static_cast<Task::Source>(s_unique_task_source_allocator.allocate()))
+    : source(static_cast<Task::Source>(s_unique_task_source_pool.acquire_identifier()))
 {
 }
 
 UniqueTaskSource::~UniqueTaskSource()
 {
-    s_unique_task_source_allocator.deallocate(static_cast<int>(source));
+    s_unique_task_source_pool.release_identifier(static_cast<int>(source));
 }
 
 NonnullRefPtr<ParallelQueue> ParallelQueue::create()
