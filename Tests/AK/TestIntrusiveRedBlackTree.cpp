@@ -5,10 +5,10 @@
  */
 
 #include <LibTest/TestCase.h>
+#include <LibTest/TestPRNG.h>
 
 #include <AK/IntrusiveRedBlackTree.h>
 #include <AK/NonnullOwnPtr.h>
-#include <AK/Random.h>
 #include <AK/Vector.h>
 
 class IntrusiveTest {
@@ -81,7 +81,7 @@ TEST_CASE(key_ordered_iteration)
         keys[i] = i;
     }
     for (size_t i = 0; i < amount; i++) {
-        swap(keys[i], keys[get_random<size_t>() % amount]);
+        swap(keys[i], keys[Test::PRNG::get_value<size_t>() % amount]);
     }
 
     // insert random keys

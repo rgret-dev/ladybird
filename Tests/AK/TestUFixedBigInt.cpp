@@ -5,9 +5,9 @@
  */
 
 #include <LibTest/TestCase.h>
+#include <LibTest/TestPRNG.h>
 
 #include <AK/NumericLimits.h>
-#include <AK/Random.h>
 #include <AK/UFixedBigInt.h>
 #include <AK/UFixedBigIntDivision.h>
 
@@ -24,7 +24,7 @@ TEST_CASE(identities)
 {
     srand(0);
     for (int i = 0; i < test_iterations; ++i) {
-        auto x = get_random<u256>();
+        auto x = Test::PRNG::get_value<u256>();
         if ((x >> 255u) & 1u) {
             // ignore numbers that could overflow
             --i;
@@ -56,7 +56,7 @@ TEST_CASE(simple_multiplication)
 {
     srand(0);
     for (int i = 0; i < test_iterations; ++i) {
-        u256 a = get_random<u256>();
+        u256 a = Test::PRNG::get_value<u256>();
 
         EXPECT_EQ(a * 0u, 0u);
         EXPECT_EQ(a * 1u, a);
@@ -71,8 +71,8 @@ TEST_CASE(div_mod)
 {
     srand(0);
     for (int i = 0; i < test_iterations; ++i) {
-        u256 a = get_random<u256>();
-        u256 b = get_random<u256>();
+        u256 a = Test::PRNG::get_value<u256>();
+        u256 b = Test::PRNG::get_value<u256>();
         u256 mod;
         u256 div = a.div_mod(b, mod);
         EXPECT_EQ(a, div * b + mod);
@@ -110,10 +110,10 @@ TEST_CASE(div_anti_knuth)
             max_native_word - 1,
         };
         for (size_t i = 0; i < storage.size(); ++i) {
-            u32 type = get_random_uniform(interesting_words_count + 1);
+            u32 type = Test::PRNG::get_uniform_value(interesting_words_count + 1);
             NativeWord& next_word = storage[i];
             if (type == interesting_words_count)
-                next_word = get_random<NativeWord>();
+                next_word = Test::PRNG::get_value<NativeWord>();
             else
                 next_word = interesting_words[type];
         }

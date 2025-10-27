@@ -135,8 +135,6 @@ shared_library("AK") {
     "Queue.h",
     "QuickSelect.h",
     "QuickSort.h",
-    "Random.cpp",
-    "Random.h",
     "RedBlackTree.h",
     "RefCounted.h",
     "RefPtr.h",

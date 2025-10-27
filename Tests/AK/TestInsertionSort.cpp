@@ -5,9 +5,9 @@
  */
 
 #include <LibTest/TestCase.h>
+#include <LibTest/TestPRNG.h>
 
 #include <AK/InsertionSort.h>
-#include <AK/Random.h>
 #include <AK/Vector.h>
 
 static constexpr int const n = 10;
@@ -21,7 +21,7 @@ TEST_CASE(sorts_ascending)
     for (int i = 0; i < iterations; ++i) {
         Vector<int, n> ints;
         for (int j = 0; j < n; ++j)
-            ints.append(get_random<int>());
+            ints.append(Test::PRNG::get_value<int>());
         Vector<int, n> ints_copy = ints;
 
         insertion_sort(ints);
@@ -42,7 +42,7 @@ TEST_CASE(sorts_descending)
     for (int i = 0; i < iterations; ++i) {
         Vector<int, n> ints;
         for (int j = 0; j < n; ++j)
-            ints.append(get_random<int>());
+            ints.append(Test::PRNG::get_value<int>());
         Vector<int, n> ints_copy = ints;
 
         insertion_sort(ints, [](auto& a, auto& b) { return a > b; });

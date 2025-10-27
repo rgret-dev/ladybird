@@ -29,6 +29,7 @@
 #include <LibGfx/Bitmap.h>
 #include <LibGfx/ImageFormats/PNGWriter.h>
 #include <LibGfx/SystemTheme.h>
+#include <LibTest/TestPRNG.h>
 #include <LibURL/Parser.h>
 #include <LibURL/URL.h>
 #include <LibWeb/HTML/SelectedFile.h>
@@ -610,7 +611,7 @@ static ErrorOr<int> run_tests(Core::AnonymousBuffer const& theme, Web::DevicePix
     });
 
     if (app.shuffle)
-        shuffle(tests);
+        ::Test::PRNG::shuffle(tests);
 
     if (app.test_dry_run) {
         outln("Found {} tests...", tests.size());

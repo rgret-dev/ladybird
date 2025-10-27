@@ -6,7 +6,6 @@
  */
 
 #include <AK/Base64.h>
-#include <AK/Random.h>
 #include <LibCrypto/Hash/HashManager.h>
 #include <LibCrypto/SecureRandom.h>
 #include <LibWebSocket/Impl/WebSocketImplSerenity.h>

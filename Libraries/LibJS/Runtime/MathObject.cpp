@@ -9,7 +9,6 @@
 
 #include <AK/BuiltinWrappers.h>
 #include <AK/Function.h>
-#include <AK/Random.h>
 #include <LibCrypto/SecureRandom.h>
 #include <LibJS/Runtime/AbstractOperations.h>
 #include <LibJS/Runtime/GlobalObject.h>

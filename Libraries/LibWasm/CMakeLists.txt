@@ -13,6 +13,6 @@ if (NOT WIN32)
 endif()
 
 ladybird_lib(LibWasm wasm EXPLICIT_SYMBOL_EXPORT)
-target_link_libraries(LibWasm PRIVATE LibCore)
+target_link_libraries(LibWasm PRIVATE LibCore LibCrypto)
 
 include(wasm_spec_tests)

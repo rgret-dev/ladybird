@@ -18,7 +18,6 @@ set(SOURCES
     MemoryStream.cpp
     NumberFormat.cpp
     OptionParser.cpp
-    Random.cpp
     StackInfo.cpp
     Stream.cpp
     String.cpp

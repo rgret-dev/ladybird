@@ -7,9 +7,9 @@
 #include <AK/ByteReader.h>
 #include <AK/Debug.h>
 #include <AK/FlyString.h>
-#include <AK/Random.h>
 #include <AK/Span.h>
 #include <AK/Tuple.h>
+#include <LibCrypto/SecureRandom.h>
 #include <LibWasm/AbstractMachine/Configuration.h>
 #include <LibWasm/Wasi.h>
 #include <fcntl.h>
@@ -741,7 +741,7 @@ ErrorOr<Result<FileStat>> Implementation::impl$fd_filestat_get(Configuration&, F
 ErrorOr<Result<void>> Implementation::impl$random_get(Configuration& configuration, Pointer<u8> buf, Size buf_len)
 {
     auto buffer_slice = TRY(slice_typed_memory(configuration, buf, buf_len));
-    fill_with_random(buffer_slice);
+    Crypto::fill_with_secure_random(buffer_slice);
 
     return Result<void> {};
 }

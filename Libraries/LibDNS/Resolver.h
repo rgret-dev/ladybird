@@ -12,7 +12,6 @@
 #include <AK/MaybeOwned.h>
 #include <AK/MemoryStream.h>
 #include <AK/QuickSort.h>
-#include <AK/Random.h>
 #include <AK/StringView.h>
 #include <AK/TemporaryChange.h>
 #include <AK/Time.h>
@@ -22,6 +21,7 @@
 #include <LibCrypto/Certificate/Certificate.h>
 #include <LibCrypto/Curves/EdwardsCurve.h>
 #include <LibCrypto/PK/RSA.h>
+#include <LibCrypto/SecureRandom.h>
 #include <LibDNS/Message.h>
 #include <LibThreading/RWLockProtected.h>
 
@@ -495,7 +495,7 @@ public:
         } else {
             m_pending_lookups.with_read_locked([&](auto& lookups) {
                 do
-                    fill_with_random({ &query.header.id, sizeof(query.header.id) });
+                    Crypto::fill_with_secure_random({ &query.header.id, sizeof(query.header.id) });
                 while (lookups->find(query.header.id) != nullptr);
             });
         }

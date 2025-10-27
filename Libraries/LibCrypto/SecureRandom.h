@@ -12,6 +12,8 @@ namespace Crypto {
 
 void fill_with_secure_random(Bytes);
 
+u32 get_secure_random_uniform(u32 max_bounds);
+
 template<typename T>
 inline T get_secure_random()
 {
