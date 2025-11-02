@@ -459,7 +459,7 @@ void ResourceLoader::load(LoadRequest& request, GC::Root<SuccessCallback> succes
 
                 if (status_code.has_value()) {
                     if (*status_code >= 100 && *status_code <= 599)
-                        error_builder.appendff(" (status: {} {})", *status_code, HTTP::HttpResponse::reason_phrase_for_code(*status_code));
+                        error_builder.appendff(" (status: {} {})", *status_code, HTTP::reason_phrase_for_code(*status_code));
                     else
                         error_builder.appendff(" (status: {})", *status_code);
                 }

@@ -9,6 +9,5 @@
 namespace HTTP {
 
 class HttpRequest;
-class HttpResponse;
 
 }
