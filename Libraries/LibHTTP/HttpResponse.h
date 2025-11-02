@@ -69,8 +69,8 @@ static StringView reason_phrase_for_code(int const code)
         { 505, "HTTP Version Not Supported"sv }
     };
 
-    if (s_reason_phrases.contains(code))
-        return s_reason_phrases.ensure(code);
+    if (auto const phrase = s_reason_phrases.get(code); phrase.has_value())
+        return phrase.value();
 
     // NOTE: "A client MUST understand the class of any status code, as indicated by the first
     //       digit, and treat an unrecognized status code as being equivalent to the x00 status
