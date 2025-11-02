@@ -80,8 +80,6 @@ public:
     void set_general_help(char const* help_string) { m_general_help = help_string; }
     void set_stop_on_first_non_option(bool stop_on_first_non_option) { m_stop_on_first_non_option = stop_on_first_non_option; }
     void print_usage(FILE*, StringView argv0);
-    void print_usage_terminal(FILE*, StringView argv0);
-    void print_usage_markdown(FILE*, StringView argv0);
     void print_version(FILE*);
 
     void add_option(Option&&);
